@@ -1,0 +1,35 @@
+package service
+
+import (
+	"context"
+	"testing"
+
+	"github.com/joho/godotenv"
+	"github.com/qingz2/gomall/app/cart/biz/dal/mysql"
+	cart "github.com/qingz2/gomall/rpc_gen/kitex_gen/cart"
+)
+
+func TestAddItem_Run(t *testing.T) {
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		t.Logf("err: %v", err)
+	}
+	mysql.Init()
+	ctx := context.Background()
+	s := NewAddItemService(ctx)
+	// init req and assert value
+
+	req := &cart.AddItemReq{
+		UserId: 22,
+		Item: &cart.CartItem{
+			ProductId: 33,
+			Quantity:  3,
+		},
+	}
+	resp, err := s.Run(req)
+	t.Logf("err: %v", err)
+	t.Logf("resp: %v", resp)
+
+	// todo: edit your unit test
+
+}
