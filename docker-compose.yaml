@@ -10,7 +10,7 @@ services:
       - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=200489
-      - MYSQL_DATABASE=demo_proto
+      - MYSQL_DATABASE=product
   redis:
     image: "redis:latest"
     ports:
