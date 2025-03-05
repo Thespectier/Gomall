@@ -6,4 +6,5 @@ use (
 	./app/frontend
 	./app/payment
 	./app/user
+	./app/order
 )
