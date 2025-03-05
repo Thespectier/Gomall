@@ -10,7 +10,13 @@ services:
       - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=200489
-      - MYSQL_DATABASE=product
+    volumes:
+      # 挂载初始化脚本
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      # 添加数据持久化
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
   redis:
     image: "redis:latest"
     ports:
@@ -20,3 +26,8 @@ services:
     ports:
       - "4222:8222"
       - "8222:8222"
+
+# 挂载数据卷实现持久化存储
+volumes:
+  mysql_data:
+    driver: local

@@ -1,0 +1,135 @@
+syntax = "proto3";
+
+package order;
+option go_package = "order";
+
+// =====================================
+// Service Definition - 服务定义
+// =====================================
+
+service OrderService {
+    // 创建新订单
+    rpc PlaceOrder(PlaceOrderReq) returns (PlaceOrderResp) {}
+    // 修改订单信息
+    rpc ModifyOrder(ModifyOrderReq) returns (ModifyOrderResp) {}
+    // 获取用户订单列表
+    rpc ListOrder(ListOrderReq) returns (ListOrderResp) {}
+    // 标记订单支付状态
+    rpc MarkOrderPaid(MarkOrderPaidReq) returns (MarkOrderPaidResp) {}
+}
+
+// =====================================
+// Basic Types - 基础类型定义
+// =====================================
+
+// Address - 收货地址信息
+message Address {
+    string street_address = 1; // 街道地址
+    string city = 2;          // 城市
+    string state = 3;         // 州/省
+    string country = 4;       // 国家
+    int32 zip_code = 5;      // 邮政编码
+}
+
+// CartItem - 购物车商品项
+message CartItem {
+    uint32 product_id = 1;    // 商品ID
+    int32  quantity = 2;      // 商品数量
+}
+
+// OrderItem - 订单商品项
+message OrderItem {
+    CartItem item = 1;        // 购物车商品项
+    float cost = 2;           // 商品项总价
+}
+
+// Order - 订单详细信息
+message Order {
+    string order_id = 1;                  // 订单ID
+    uint32 user_id = 2;                   // 用户ID
+    string user_currency = 3;             // 用户货币类型
+    string email = 4;                     // 用户邮箱
+    Address address = 5;                  // 收货地址
+    repeated OrderItem order_items = 6;   // 订单商品列表
+    int64 created_at = 7;                // 订单创建时间(Unix时间戳)
+    int64 paid_at = 8;                   // 订单支付时间(Unix时间戳)
+    int64 updated_at = 9;                // 订单更新时间(Unix时间戳)
+    int64 autocancel_at = 10;                // 订单自动取消时间(Unix时间戳)
+    OrderStatus status = 11;               // 订单状态
+}
+
+// 新增状态枚举
+enum OrderStatus {
+    UNKNOWN = 0;
+    CREATED = 1;   // 已创建
+    PAID = 2;      // 已支付
+    SHIPPED = 3;   // 已发货
+    CANCELED = 4;  // 已取消
+}
+
+// =====================================
+// Place Order - 创建订单相关消息
+// =====================================
+
+// PlaceOrderReq - 创建订单请求
+message PlaceOrderReq {
+    uint32 user_id = 1;                    // 用户ID
+    string user_currency = 2;              // 用户货币类型
+    Address address = 3;                   // 收货地址
+    string email = 4;                      // 用户邮箱
+    repeated OrderItem order_items = 5;    // 订单商品列表
+}
+
+
+// PlaceOrderResp - 创建订单响应
+message PlaceOrderResp {
+    string order_id = 1;                 // 订单结果
+}
+
+// =====================================
+// Modify Order - 创建订单相关消息
+// =====================================
+
+// ModifyOrderReq - 修改订单请求
+message ModifyOrderReq {
+    uint32 user_id = 1;                    // 用户ID
+    string order_id = 2;                    // 待修改订单id
+    string user_currency = 3;              // 待修改用户货币类型
+    Address address = 4;                   // 待修改收货地址
+    string email = 5;                      // 待修改用户邮箱
+    repeated OrderItem order_items = 6;    // 待修改订单商品列表
+
+}
+
+// ModifyOrderResp - 修改订单响应
+message ModifyOrderResp {
+    string order_id = 1;                //修改后订单id
+}
+
+// =====================================
+// List Order - 订单列表相关消息
+// =====================================
+
+// ListOrderReq - 获取订单列表请求
+message ListOrderReq {
+    uint32 user_id = 1;                   // 用户ID
+}
+
+
+// ListOrderResp - 获取订单列表响应
+message ListOrderResp {
+    repeated Order orders = 1;            // 订单列表
+}
+
+// =====================================
+// Mark Paid - 订单支付相关消息
+// =====================================
+
+// MarkOrderPaidReq - 标记订单已支付请求
+message MarkOrderPaidReq {
+    uint32 user_id = 1;                  // 用户ID
+    string order_id = 2;                 // 订单ID
+}
+
+// MarkOrderPaidResp - 标记订单已支付响应
+message MarkOrderPaidResp {}            
