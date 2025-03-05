@@ -1,4 +1,4 @@
-go 1.23.6
+go 1.24.1
 
 use (
 	./app/cart
@@ -7,4 +7,5 @@ use (
 	./app/payment
 	./app/user
 	./app/order
+	./app/product
 )
