@@ -25,10 +25,12 @@ require (
 require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
+	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 	go.opentelemetry.io/otel/sdk v1.34.0 // indirect
 	golang.org/x/exp v0.0.0-20240112132812-db7319d0e0e3 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250115164207-1a7da9e5054f // indirect
-	//google.golang.org/grpc v1.69.4 
+	gorm.io/driver/sqlite v1.5.7 // indirect
+//google.golang.org/grpc v1.69.4
 //google.golang.org/grpc v1.63.0
 )
 

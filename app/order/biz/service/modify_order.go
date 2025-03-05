@@ -28,6 +28,15 @@ func (s *ModifyOrderService) Run(req *order.ModifyOrderReq) (resp *order.ModifyO
 	}
 	// 开启事务保持原子性
 	err = mysql.DB.Transaction(func(tx *gorm.DB) error {
+		// 检查订单是否存在
+		var existingOrder model.Order
+		if err := tx.Where("user_id = ? AND order_id = ?", req.UserId, req.OrderId).First(&existingOrder).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				return fmt.Errorf("order not found: %s", req.OrderId)
+			}
+			return err
+		}
+
 		//更新订单商品项和总价
 		var itemlist []*model.OrderItem
 		var totalCost float32
@@ -51,17 +60,44 @@ func (s *ModifyOrderService) Run(req *order.ModifyOrderReq) (resp *order.ModifyO
 		}
 		// 创建待更新项map
 		updateMap := map[string]interface{}{
-			"OrderStata":   model.OrderStateModified,
+			"OrderState":   model.OrderStateModified,
 			"UserCurrency": req.UserCurrency,
-			"Address":      address,
-			"OrderItems":   itemlist, //此处可能存在问题，待修改
 			"TotalCost":    totalCost,
 		}
-		// 更新订单信息
-		if err := model.UpdateOrder(mysql.DB, s.ctx, req.UserId, req.OrderId, updateMap); err != nil {
+
+		// 更新订单基本信息
+		if err := model.UpdateOrder(tx, s.ctx, req.UserId, req.OrderId, updateMap); err != nil {
 			klog.Errorf("model.UpdateOrder error: %v", err)
 			return err
 		}
+
+		// 更新地址信息
+		if err := tx.Model(&model.Order{}).
+			Where("user_id = ? AND order_id = ?", req.UserId, req.OrderId).
+			Updates(map[string]interface{}{
+				"street_address": address.StreetAddress,
+				"city":           address.City,
+				"state":          address.State,
+				"zip_code":       address.ZipCode,
+				"email":          address.Email,
+				"country":        address.Country,
+			}).Error; err != nil {
+			klog.Errorf("update address error: %v", err)
+			return err
+		}
+
+		// 删除旧的订单项
+		if err := tx.Where("order_id_refer = ?", req.OrderId).Delete(&model.OrderItem{}).Error; err != nil {
+			klog.Errorf("delete old order items error: %v", err)
+			return err
+		}
+
+		// 创建新的订单项
+		if err := tx.Create(itemlist).Error; err != nil {
+			klog.Errorf("create new order items error: %v", err)
+			return err
+		}
+
 		// 返回响应
 		resp = &order.ModifyOrderResp{
 			OrderId: req.OrderId,
