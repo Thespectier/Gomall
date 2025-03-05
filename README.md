@@ -28,7 +28,10 @@ TikTok E-commerce Project of ByteDance Youth Training Camp Based on Golang
 1. 在根目录下执行：
 
 ``` shell
-docker-compose start -d
+# 首次运行时执行
+docker-compose up -d
+# 后续再次运行时
+docker-compose restart -d
 #or docker compose start -d
 ```
 
@@ -47,7 +50,15 @@ go mod tidy
 go run .
 ```
 
-4. 服务端正常运行之后就可以运行service层中的单元测试代码，对该服务进行测试。*ps: 在本地mysql中，需要在main函数中看到了dal.Init()需要自己创建对应服务的数据库，如user服务就需要创建名为user的database，否则会报错*
+4. 服务端正常运行之后就可以运行service层中的单元测试代码，对该服务进行测试。
+
+5. 测试结束后关闭容器：
+``` shell
+# 停止服务
+docker compose stop
+# 停止并删除服务
+docker compose down 
+```
 
 ### 参考资料 ###
 
