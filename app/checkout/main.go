@@ -9,12 +9,14 @@ import (
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	"github.com/qingz2/gomall/app/checkout/conf"
+	"github.com/qingz2/gomall/app/checkout/infra/mq"
 	"github.com/qingz2/gomall/rpc_gen/kitex_gen/checkout/checkoutservice"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
+	mq.Init()
 	opts := kitexInit()
 
 	svr := checkoutservice.NewServer(new(CheckoutServiceImpl), opts...)
