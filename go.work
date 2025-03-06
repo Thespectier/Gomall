@@ -3,9 +3,10 @@ go 1.24.1
 use (
 	./app/cart
 	./app/checkout
+	./app/email
 	./app/frontend
 	./app/payment
-	./app/user
 	./app/order
 	./app/product
+	./app/user
 )

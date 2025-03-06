@@ -26,3 +26,9 @@ gen-checkout:
 gen-product:
 	@cd rpc_gen && cwgo client --type RPC --I ../idl --idl ../idl/product.proto --service product --module github.com/qingz2/gomall/rpc_gen
 	@cd app/product && cwgo server --type RPC --I ../../idl --idl ../../idl/product.proto --service product --module github.com/qingz2/gomall/app/product --pass "-use github.com/qingz2/gomall/rpc_gen/kitex_gen"
+
+.PHONY: gen-email
+gen-email:
+	@cd rpc_gen && cwgo client --type RPC --I ../idl --idl ../idl/email.proto --service email --module github.com/qingz2/gomall/rpc_gen
+	@cd app/email && cwgo server --type RPC --I ../../idl --idl ../../idl/email.proto --service email --module github.com/qingz2/gomall/app/email --pass "-use github.com/qingz2/gomall/rpc_gen/kitex_gen"
+

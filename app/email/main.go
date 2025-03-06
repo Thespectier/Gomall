@@ -8,18 +8,21 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
-	"github.com/qingz2/gomall/app/checkout/conf"
-	"github.com/qingz2/gomall/app/checkout/infra/mq"
-	"github.com/qingz2/gomall/rpc_gen/kitex_gen/checkout/checkoutservice"
+	"github.com/qingz2/gomall/app/email/biz/consumer"
+	"github.com/qingz2/gomall/app/email/conf"
+	"github.com/qingz2/gomall/app/email/infra/mq"
+	"github.com/qingz2/gomall/rpc_gen/kitex_gen/email/emailservice"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
 	mq.Init()
+	consumer.Init()
+
 	opts := kitexInit()
 
-	svr := checkoutservice.NewServer(new(CheckoutServiceImpl), opts...)
+	svr := emailservice.NewServer(new(EmailServiceImpl), opts...)
 
 	err := svr.Run()
 	if err != nil {

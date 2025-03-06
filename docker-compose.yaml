@@ -21,6 +21,11 @@ services:
     image: "redis:latest"
     ports:
       - 6379:6379
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+      - "8222:8222"
 
 # 挂载数据卷实现持久化存储
 volumes:
