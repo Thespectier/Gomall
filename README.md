@@ -31,7 +31,7 @@ TikTok E-commerce Project of ByteDance Youth Training Camp Based on Golang
 # 首次运行时执行
 docker-compose up -d
 # 后续再次运行时
-docker-compose restart -d
+docker-compose restart
 #or docker compose start -d
 ```
 
